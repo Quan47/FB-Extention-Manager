@@ -4,7 +4,7 @@ export type UserRecord = {
   id: string;
   userName: string;
   password: string;
-  litmit: string | null;
+  limit: string | null;
   balance?: string | null;
   currentPackage?: string | null;
   daysLeft?: string | null;
@@ -22,7 +22,7 @@ function mapUserRow(row: Record<string, unknown>) {
   return {
     id: toText(row.id),
     userName: toText(row.userName),
-    litmit: row.litmit === null || row.litmit === undefined ? null : String(row.litmit),
+    limit: row.limit === null || row.limit === undefined ? (row["limit"] === null || row["limit"] === undefined ? null : String(row["limit"])) : String(row.limit),
     balance: row.balance === null || row.balance === undefined ? null : String(row.balance),
     currentPackage: row.currentPackage === null || row.currentPackage === undefined ? null : String(row.currentPackage),
     daysLeft: row.daysLeft === null || row.daysLeft === undefined ? null : String(row.daysLeft),
@@ -50,4 +50,13 @@ export async function findUserByUserName(userName: string): Promise<UserRecord |
 export async function listUsers() {
   const result = await db.execute("SELECT * FROM user ORDER BY id DESC");
   return result.rows.map((row) => mapUserRow(row as unknown as Record<string, unknown>));
+}
+
+export async function decrementUserLimitIfAvailable(userId: string) {
+  const result = await db.execute({
+    sql: 'UPDATE user SET "limit" = CAST("limit" AS INTEGER) - 1 WHERE id = ? AND CAST("limit" AS INTEGER) > 0',
+    args: [userId]
+  });
+
+  return result.rowsAffected > 0;
 }

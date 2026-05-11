@@ -36,7 +36,7 @@ export default async function DashboardPage() {
   const users = await listUsers();
   const activeUser = users.find((u) => u.userName === session.userName) ?? users[0];
   const balance = activeUser?.balance ?? "0";
-  const currentPackage = activeUser?.currentPackage ?? activeUser?.litmit ?? "0";
+  const currentPackage = activeUser?.currentPackage ?? activeUser?.limit ?? "0";
   const daysLeft = activeUser?.daysLeft ?? "0";
   const sessions = activeUser?.sessions ?? "0";
   const keyExtension = activeUser?.keyExtension ?? "0";

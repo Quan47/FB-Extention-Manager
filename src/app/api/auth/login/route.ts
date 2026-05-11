@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { findUserByUserName } from "@/lib/queries";
+import { decrementUserLimitIfAvailable, findUserByUserName } from "@/lib/queries";
 import { verifyPassword } from "@/lib/user";
 import { setSessionCookie, signSession } from "@/lib/auth";
 
@@ -17,6 +17,11 @@ export async function POST(req: Request) {
 
     if (!ok) {
       return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
+    }
+
+    const hasLimit = await decrementUserLimitIfAvailable(String(user.id));
+    if (!hasLimit) {
+      return NextResponse.json({ error: "Limit is exhausted." }, { status: 403 });
     }
 
     const token = await signSession({ userId: String(user.id), userName: String(user.userName) });
