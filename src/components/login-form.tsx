@@ -38,7 +38,7 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-8 shadow-xl">
-      <h1 className="text-2xl font-semibold">FB Extension Admin</h1>
+      <h1 className="text-2xl font-semibold">Ads Manager</h1>
       <p className="mt-1 text-sm text-[var(--muted)]">Sign in to manage extension users</p>
 
       <label className="mt-6 block text-sm font-medium">Username</label>
